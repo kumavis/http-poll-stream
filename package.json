@@ -16,6 +16,7 @@
   "devDependencies": {
     "concat-stream": "^1.6.2",
     "from2": "^2.3.0",
+    "parallel-transform": "^1.1.0",
     "pify": "^3.0.0",
     "tape": "^4.9.1"
   },

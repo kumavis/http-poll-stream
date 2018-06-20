@@ -12,7 +12,7 @@ const createHttpServerStream = require('../src/server')
 const port = 9000
 
 
-asyncTest('basic test', async (t) => {
+asyncTest('server - basic test', async (t) => {
   const serverStream = createHttpServerStream({})
   // create server with serverStream's onRequest handler
   const server = await setupTestServer(serverStream.onRequest)
@@ -80,11 +80,6 @@ function setupTestServer(requestHandler) {
   return new Promise(function(resolve, reject) {
     const server = http.createServer(async (request, response) => {
       await requestHandler(request, response)
-      // const rawRequestBody = await readToEnd(request)
-      // const number = parseInt(rawRequestBody.toString(), 10)
-      // const result = number * 2
-      // const rawResBody = result.toString()
-      // response.end(rawResBody)
     })
     server.listen(port, (err) => {
       if (err) return reject(err)

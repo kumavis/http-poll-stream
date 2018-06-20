@@ -19,9 +19,7 @@ function createHttpServerStream(opts) {
 
   function onRequest(request, response) {
     // manually pipe in data so we dont propagate the end event
-    request.on('data', (data) => {
-      outStream.write(data)
-    })
+    request.on('data', (data) => outStream.write(data))
     // read whatever data is ready to go
     const childStream = createSubstream(inStream, { delay: idleDelay })
     childStream.pipe(response)
