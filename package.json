@@ -1,0 +1,27 @@
+{
+  "name": "http-poll-stream",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "duplexify": "^3.6.0",
+    "hyperquest": "^2.1.3",
+    "pump": "^3.0.0",
+    "readable-stream": "^2.3.6",
+    "substream-on-active": "^1.0.0"
+  },
+  "devDependencies": {
+    "concat-stream": "^1.6.2",
+    "from2": "^2.3.0",
+    "pify": "^3.0.0",
+    "tape": "^4.9.1"
+  },
+  "scripts": {
+    "test": "node test/index"
+  },
+  "author": "",
+  "license": "ISC"
+}
