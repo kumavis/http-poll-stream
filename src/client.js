@@ -25,7 +25,6 @@ function createHttpClientStream(opts) {
 
   // break inStream into small childStreams of activity
   async function processChildStream (childStream) {
-    console.log('client started childStream')
     const writeStream = hyperquest.post(uri)
     // manually pipe in data so we dont propagate the end event
     writeStream.on('data', (data) => outStream.write(data))
@@ -33,7 +32,6 @@ function createHttpClientStream(opts) {
       childStream,
       writeStream
     )
-    console.log('client finished childStream')
   }
 
   return primaryStream
