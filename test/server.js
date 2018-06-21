@@ -21,7 +21,6 @@ asyncTest('server - basic test', async (t) => {
   serverStream.write('1')
   serverStream.write('2')
   serverStream.write('3')
-  serverStream.end()
 
   // send data to server and read response
   let serverSentData
@@ -32,6 +31,9 @@ asyncTest('server - basic test', async (t) => {
       serverSentData = _serverSentData
     })
   )
+
+  // end the server stream so we can read to the end
+  serverStream.end()
 
   // read data from client
   let clientSentData
@@ -44,22 +46,6 @@ asyncTest('server - basic test', async (t) => {
 
   t.equal(serverSentData.toString(), '123', 'server sent data matches expected')
   t.equal(clientSentData.toString(), 'haay wuurl', 'client sent data matches expected')
-
-  // // single round trip
-  // clientStream.write('24')
-  // const result1 = await asyncOnce(clientStream, 'data')
-  // t.equals(result1.toString(), '48', 'response matches expected')
-  //
-  // // two writes are concattenated
-  // clientStream.write('12')
-  // clientStream.write('34')
-  // const result2 = await asyncOnce(clientStream, 'data')
-  // t.equals(result2.toString(), '2468', 'response matches expected')
-  //
-  // // single write again
-  // clientStream.write('13')
-  // const result3 = await asyncOnce(clientStream, 'data')
-  // t.equals(result3.toString(), '26', 'response matches expected')
 
   server.close()
   t.end()

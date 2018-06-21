@@ -35,20 +35,23 @@ asyncTest('both - basic test', async (t) => {
   }
 
   // single round trip
+  const activity1 = asyncOnce(clientStream, 'data')
   clientStream.write('24')
-  const result1 = await asyncOnce(clientStream, 'data')
+  const result1 = await activity1
   t.equals(result1.toString(), '48', 'response matches expected')
   await timeout(idleDelay * 1.5)
 
   // write again
+  const activity2 = asyncOnce(clientStream, 'data')
   clientStream.write('34')
-  const result2 = await asyncOnce(clientStream, 'data')
+  const result2 = await activity2
   t.equals(result2.toString(), '68', 'response matches expected')
   await timeout(idleDelay * 1.5)
 
   // single write again
+  const activity3 = asyncOnce(clientStream, 'data')
   clientStream.write('13')
-  const result3 = await asyncOnce(clientStream, 'data')
+  const result3 = await activity3
   t.equals(result3.toString(), '26', 'response matches expected')
 
   server.close()

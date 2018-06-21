@@ -1,10 +1,7 @@
 const duplexify = require('duplexify')
 const ThroughStream = require('readable-stream').PassThrough
-const pump = require('pump')
 const endOfStream = require('end-of-stream')
-const hyperquest = require('hyperquest')
-const substreamOnActive = require('substream-on-active')
-const { createSubstream } = require('substream-on-active')
+const { createSubstreamer } = require('substream-on-active')
 
 module.exports = createHttpServerStream
 
@@ -15,20 +12,28 @@ function createHttpServerStream(opts) {
   const idleDelay = opts.idleDelay || 400
   const uri = opts.uri
 
+  const getNextChildStream = createSubstreamer(inStream)
+  let nextChildStream = getNextChildStream()
+
   primaryStream.onRequest = onRequest
 
   function onRequest(request, response) {
+    // grab constant reference to nextChildStream
+    const currentChildStream = nextChildStream
+    // when request is done, break off the current childStream
+    endOfStream(request, (err) => {
+      if (err) return console.error(err)
+      // this triggers the end of currentChildStream
+      nextChildStream = getNextChildStream()
+    })
     // manually pipe in data so we dont propagate the end event
     request.on('data', (data) => outStream.write(data))
-    // read whatever data is ready to go
-    const childStream = createSubstream(inStream, { delay: idleDelay })
-    childStream.pipe(response)
+    // flow whatever data is ready as the response
+    currentChildStream.pipe(response)
   }
 
   // forward inStream end to outStream
-  endOfStream(inStream, (err) => {
-    outStream.end(err)
-  })
+  endOfStream(inStream, (err) => outStream.end(err))
 
   return primaryStream
 }
