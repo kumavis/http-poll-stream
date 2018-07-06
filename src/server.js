@@ -10,6 +10,7 @@ function createHttpServerStream(opts) {
   const outStream = new ThroughStream()
   const primaryStream = duplexify(inStream, outStream)
   const idleDelay = opts.idleDelay || 400
+  const closeResponseDelay = opts.closeResponseDelay || 20
   const uri = opts.uri
 
   const getNextChildStream = createSubstreamer(inStream)
@@ -23,8 +24,11 @@ function createHttpServerStream(opts) {
     // when request is done, break off the current childStream
     endOfStream(request, (err) => {
       if (err) return console.error(err)
-      // this triggers the end of currentChildStream
-      nextChildStream = getNextChildStream()
+      // wait a short time to allow a response to be prepared
+      setTimeout(() => {
+        // this triggers the end of currentChildStream
+        nextChildStream = getNextChildStream()
+      }, closeResponseDelay)
     })
     // manually pipe in data so we dont propagate the end event
     request.on('data', (data) => outStream.write(data))
