@@ -6,12 +6,12 @@ const { createSubstreamer } = require('substream-on-active')
 module.exports = createHttpServerStream
 
 function createHttpServerStream(opts) {
+  opts = opts || {}
   const inStream = new ThroughStream()
   const outStream = new ThroughStream()
   const primaryStream = duplexify(inStream, outStream)
   const idleDelay = opts.idleDelay || 400
   const closeResponseDelay = opts.closeResponseDelay || 20
-  const uri = opts.uri
 
   const getNextChildStream = createSubstreamer(inStream)
   let nextChildStream = getNextChildStream()
