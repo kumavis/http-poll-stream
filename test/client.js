@@ -2,7 +2,8 @@ const test = require('tape')
 const http = require('http')
 const concat = require('concat-stream')
 const pify = require('pify')
-const asyncEndOfStream = pify(require('end-of-stream'))
+const endOfStream = require('end-of-stream')
+const asyncEndOfStream = pify(endOfStream)
 
 const createHttpClientStream = require('../src/client')
 
@@ -41,6 +42,20 @@ asyncTest('client - basic test', async (t) => {
 
   server.close()
   t.end()
+})
+
+test('client - init failure test', (t) => {
+  const clientStream = createHttpClientStream({
+    uri: `http://localhost:${port}`,
+  })
+
+  endOfStream(clientStream, (err) => {
+    t.ok(err)
+    t.end()
+  })
+
+  // single round trip
+  clientStream.write('24')
 })
 
 
