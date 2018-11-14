@@ -35,7 +35,8 @@ function createHttpClientStream(opts) {
     // manually pipe in data so we dont propagate the end event
     writeStream.on('data', (data) => outStream.write(data))
     // manually propagate the error event
-    writeStream.on('error', (err) => outStream.write(err))
+    writeStream.on('error', (err) => outStream.emit('error', err))
+
     await pumpAsync(
       childStream,
       writeStream
